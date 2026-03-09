@@ -1,33 +1,23 @@
-name: GitHub Snake
+name: Generate Snake
 
 on:
   schedule:
-    - cron: '0 0 * * *' # runs daily
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Generate snake animation
+        uses: Platane/snk@v3
         with:
-          node-version: '20'
+          github_user_name: sam27086
+          outputs: snake.svg
 
-      - name: Install snake generator
-        run: npm install -g @platane/snk
-
-      - name: Generate snake SVG
-        run: snk --username sam27086 --output snake.svg
-
-      - name: Commit and push SVG
-        run: |
-          git config --local user.name "GitHub Actions"
-          git config --local user.email "actions@github.com"
-          git add snake.svg
-          git diff-index --quiet HEAD || git commit -m "Update snake"
-          git push
+      - name: Push snake.svg
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "snake.svg"
+          message: "update snake"
